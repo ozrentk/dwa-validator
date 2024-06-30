@@ -1,39 +1,14 @@
-TODO:
+1. Instalirati SQL Server Express LocalDB ako veƒá nije instaliran
+   https://learn.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb
 
-- za studente
-    - poslati koji je korisnik admin
-    - poslati koji je korisnik "obiËan korisnik"
-    - ako postoje bin i obj folderi, traûiti da ih se obriöe zbog problema s veliËinom arhive
+2. Raspakirati DwaValidatorApp.zip na raƒçunalo
 
-- dodatne funkcionalnosti
-    - kod prvog pokretanja se otvara dijalog i sprema mjesto gdje Êe biti raspakirana rjeöenja i kreirane datoteke baza podataka
-      (default: %USERPROFILE%\DwaValidator)
-        - treba mi konfiguracija za to
-    - podrûati scheme kod rada s bazom podataka
+3. Otvoriti datoteku .dwavalidator u tekst-editoru i provjeriti odgovara li
+   Vam mjesto gdje ƒáe se lokalno raspakirati arhiva za validaciju (StorageRootFolder).
+   Ako ne odgovara, promijeniti po ≈æelji i spremiti.
 
-- provjere kvalitete: Web API (app i DB)
-	- sve provjere kvalitete mogu biti poluautomatizirane, to jest moûe se prikazati hint
-    - postoji li ruta za primarni entitet u bazi?
-    - radi li GET na primarnom entitetu?
-    - rade li PUT/POST/DELETE na primarnom entitetu?
-    - radi li search po parametru Name sa pagingacijom?
-    - radi li kreiranje logova i dohvat posljednjih N logova, s time da je N default=10?
-    - radi li count logova?
-    - imaju li logovi Id, Timestamp, Level i Message?
+4. Pokrenuti DwaValidatorApp.exe
 
-- provjere kvalitete: MVC
-    - radi li landing page?
-    - radi li admin login?
-    - na stranici s listom entiteta, ima li tekst za pretraûivanje, padajuÊi izbornik za 1-to-N stavke, gumb search i previous i next za prethodnih 10 i sljedeÊih 10?
-    - rade li Details, Add, Edit i Delete?
-    - List, Add, Edit i Delete za 1-na-N
-    - List, Add, Edit i Delete za M-na-N
-    - Jesu li navigacija i logout na svim stranicama osim login/register?
-    - Jesu li stranice vizualno dotjerane?
-    - Imaju li modeli validaciju?
-      (moguÊ hint)
-    - Mogu li se unijeti prazni unosi negdje, a da to nema smisla?
-    - Mogu li se unijeti dupli nazivi?
-    - Koriste li labele atribute za oznaËavanje?
-      (moguÊ hint)
-    - Postoji li profil stranica sa Ajax funkcionalnosti?
+5. Koristeƒái drag-and-drop dovuƒái Va≈°u projektnu arhivu u aplikaciju
+
+6. Pokrenuti validaciju dvostrukim klikom mi≈°a na nju.
