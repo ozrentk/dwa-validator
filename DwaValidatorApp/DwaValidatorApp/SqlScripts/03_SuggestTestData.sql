@@ -1,4 +1,4 @@
-CREATE OR ALTER PROCEDURE SuggestTestData
+CREATE OR ALTER PROCEDURE [dbo].[SuggestTestData]
 	@targetTableName sysname
 AS
 BEGIN
@@ -19,19 +19,23 @@ BEGIN
 			typeScale = CASE WHEN sc.scale <= 0 THEN NULL ELSE sc.scale END,
 			referencedTableName = stref.name,
 			referencedColumnName = scref.name,
-			isPrimaryKey = ISNULL(i.is_primary_key, 0),
+			isPrimaryKey = ISNULL(idx.is_primary_key, 0),
 			isIdentity = sc.is_identity
 		FROM 
 			sys.schemas ss
 			JOIN sys.tables st ON st.schema_id = ss.schema_id
 			JOIN sys.columns sc ON sc.object_id = st.object_id
-			LEFT JOIN sys.index_columns ic 
-				ON ic.object_id = sc.object_id
-				AND ic.index_column_id = sc.column_id
-			LEFT JOIN sys.indexes i 
-				ON i.object_id = ic.object_id
-				AND i.index_id = ic.index_id
-				AND i.is_primary_key = 1
+			OUTER APPLY ( 
+				SELECT i.*
+				FROM 
+					sys.index_columns ic 
+					JOIN sys.indexes i ON
+						i.object_id = ic.object_id
+						AND i.index_id = ic.index_id
+						AND i.is_primary_key = 1
+				WHERE
+					ic.object_id = sc.object_id
+					AND ic.index_column_id = sc.column_id) idx
 			JOIN sys.types AS stp ON stp.user_type_id = sc.user_type_id
 			LEFT JOIN sys.foreign_key_columns fkc 
 				ON fkc.parent_object_id = st.object_id
@@ -220,10 +224,11 @@ BEGIN
 			DECLARE @seconds int = DATEDIFF(ss, @minDate, @maxDate)
 			DECLARE @rndSeconds int = ABS(CHECKSUM(NEWID()) % @seconds)
 			DECLARE @rndDate datetime2 = DATEADD(SECOND, @rndSeconds, @minDate)
-			PRINT 'Random date: ' + @columnName + '=' + CAST(@rndDate AS nvarchar(100))
+			DECLARE @rndDateStr nvarchar(50) = FORMAT(@rndDate, 'yyyy-MM-ddThh:mm:ss')
+			PRINT 'Random date: ' + @columnName + '=' + @rndDateStr
 
 			UPDATE #tableDefData
-			SET suggestedValue = @rndDate
+			SET suggestedValue = @rndDateStr
 			WHERE CURRENT OF @tableDefDataCursor;
 		END
 		ELSE -- unsupporteds

@@ -64,7 +64,7 @@ namespace DwaValidatorApp
             }
             catch (Exception)
             {
-                // TODO: Handle exception
+                // TODO: handle exception
             }
         }
 
@@ -89,7 +89,7 @@ namespace DwaValidatorApp
             }
             catch (Exception)
             {
-                // TODO: Handle exception
+                // TODO: handle exception
             }
 
         }

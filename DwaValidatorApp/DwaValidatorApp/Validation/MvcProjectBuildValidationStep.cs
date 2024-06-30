@@ -6,12 +6,13 @@ namespace DwaValidatorApp.Validation
     public class MvcProjectBuildValidationStep : ProjectBuildValidationStep
     {
         public override async Task<ValidationResult> RunAsync(ValidationContext context) =>
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 ValidationResult res = new();
 
                 var restorePackagesLogger = new CustomLogger();
-                if (!RestoreNuGetPackages(context.VsMvcProjectPath, restorePackagesLogger))
+                var isRestored = await RestoreNuGetPackages(context.VsMvcProjectPath, restorePackagesLogger);
+                if (!isRestored)
                 {
                     res.AddErrors(restorePackagesLogger.Errors);
                     return res;

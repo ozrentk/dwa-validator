@@ -8,6 +8,7 @@ TODO:
 - dodatne funkcionalnosti
     - kod prvog pokretanja se otvara dijalog i sprema mjesto gdje æe biti raspakirana rješenja i kreirane datoteke baza podataka
       (default: %USERPROFILE%\DwaValidator)
+        - treba mi konfiguracija za to
     - podržati scheme kod rada s bazom podataka
 
 - provjere kvalitete: Web API (app i DB)

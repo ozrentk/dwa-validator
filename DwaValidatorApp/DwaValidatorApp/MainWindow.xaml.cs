@@ -5,11 +5,12 @@ using DwaValidatorApp.Services.Interface;
 using DwaValidatorApp.Validation;
 using DwaValidatorApp.Viewmodel;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SharpYaml.Serialization;
 using System.Data;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Windows;
@@ -18,6 +19,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using YamlDotNet.Serialization;
 
 namespace DwaValidatorApp
 {
@@ -27,27 +29,28 @@ namespace DwaValidatorApp
     public partial class MainWindow : Window
     {
         private readonly ISolutionArchiveProvider _solutionArchiveProvider;
-        private readonly AppSettings _appSettings;
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly IValidationContextProvider _contextProvider;
         private readonly IDashboardDataProvider _dashboardDataProvider;
+        private readonly IYamlSettings _yamlSettings;
 
         private ApplicationVM _applicationVm { get; set; } = new();
 
-        private DispatcherTimer _procCheckTimer = new DispatcherTimer();
+        private DispatcherTimer _procCheckTimer = new();
 
         public MainWindow(
             ISolutionArchiveProvider solutionArchiveProvider,
-            IOptions<AppSettings> appSettings,
             IServiceScopeFactory scopeFactory,
             IValidationContextProvider contextProvider,
-            IDashboardDataProvider dashboardDataProvider)
+            IDashboardDataProvider dashboardDataProvider,
+            IYamlSettings yamlSettings)
         {
             _solutionArchiveProvider = solutionArchiveProvider;
-            _appSettings = appSettings.Value;
+            //_appSettings = appSettings.Value;
             _scopeFactory = scopeFactory;
             _contextProvider = contextProvider;
             _dashboardDataProvider = dashboardDataProvider;
+            _yamlSettings = yamlSettings;
 
             InitializeComponent();
 
@@ -144,7 +147,10 @@ namespace DwaValidatorApp
                     scope.ServiceProvider.GetRequiredService<IAppVmProvider>();
                 vmProvider.Current = _applicationVm;
 
-                _contextProvider.Current.SolutionArchivePath = solItem.SolutionPath;
+                var appSettings = _yamlSettings.Read();
+                var ctx = _contextProvider.Current;
+                ctx.Root = appSettings.StorageRootFolder;
+                ctx.SolutionArchivePath = solItem.SolutionPath;
 
                 var currentValidationStep = ValidationStepKind.None;
                 messagesBox.Inlines.Clear();
@@ -374,7 +380,7 @@ namespace DwaValidatorApp
             var selectedMethod = new HttpMethod(httpRequestMethod.Text);
             var requestUri = httpRequestUri.Text;
 
-            using (HttpClient client = new HttpClient())
+            using (HttpClient client = new())
             {
                 var request = new HttpRequestMessage(selectedMethod, requestUri);
 
@@ -436,7 +442,7 @@ namespace DwaValidatorApp
         {
             string programFiles = Environment.ExpandEnvironmentVariables("%ProgramFiles%");
 
-            Process process = new Process();
+            Process process = new();
             process.StartInfo.UseShellExecute = true;
             process.StartInfo.FileName = $"{programFiles}\\Google\\Chrome\\Application\\chrome.exe";
             process.StartInfo.Arguments = $"{_contextProvider.Current.WebApiUrl}/swagger";
@@ -449,7 +455,7 @@ namespace DwaValidatorApp
             {
                 string programFiles = Environment.ExpandEnvironmentVariables("%ProgramFiles%");
 
-                Process process = new Process();
+                Process process = new();
                 process.StartInfo.UseShellExecute = true;
                 process.StartInfo.FileName = $"{programFiles}\\Google\\Chrome\\Application\\chrome.exe";
                 process.StartInfo.Arguments = _contextProvider.Current.MvcUrl;

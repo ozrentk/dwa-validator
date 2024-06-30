@@ -250,35 +250,41 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition />
                             </Grid.RowDefinitions>
-                            <TextBox x:Name="httpRequestContent"
-                                     Grid.Column="0"
-                                     TextWrapping="Wrap" 
-                                     AcceptsReturn="True"
-                                     FontFamily="Courier New">
-                            </TextBox>
-                            <TextBox x:Name="httpResponseContent"
-                                     Grid.Column="1"
-                                     TextWrapping="Wrap" 
-                                     AcceptsReturn="True"
-                                     FontFamily="Courier New"
-                                     IsReadOnly="True">
-                            </TextBox>
-                            <Label x:Name="isJwtKnown"
-                                   Grid.Column="1"
-                                   Background="#80336699"
-                                   Foreground="Black"
-                                   Content="JWT"
-                                   Visibility="{Binding IsJwtKnown, Converter={StaticResource BoolToVisConverter}, FallbackValue=Hidden}"
-                                   BorderBrush="Black"
-                                   BorderThickness="1"
-                                   VerticalAlignment="Bottom"
-                                   HorizontalAlignment="Left"
-                                   Margin="2"/>
-                            <Label x:Name="httpResponseStatusCode"
-                                   Grid.Column="1"
-                                   Foreground="Gray"
-                                   VerticalAlignment="Bottom"
-                                   HorizontalAlignment="Right"/>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                          Grid.Column="0">
+                                <TextBox x:Name="httpRequestContent"
+                                         TextWrapping="Wrap" 
+                                         AcceptsReturn="True"
+                                         FontFamily="Courier New">
+                                </TextBox>
+                            </ScrollViewer>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                          Grid.Column="1">
+                                <Grid>
+                                    <TextBox x:Name="httpResponseContent"
+                                             TextWrapping="Wrap" 
+                                             AcceptsReturn="True"
+                                             FontFamily="Courier New"
+                                             IsReadOnly="True">
+                                    </TextBox>
+                                    <Label x:Name="isJwtKnown"
+                                           Grid.Column="1"
+                                           Background="#80336699"
+                                           Foreground="Black"
+                                           Content="JWT"
+                                           Visibility="{Binding IsJwtKnown, Converter={StaticResource BoolToVisConverter}, FallbackValue=Hidden}"
+                                           BorderBrush="Black"
+                                           BorderThickness="1"
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Left"
+                                           Margin="2"/>
+                                    <Label x:Name="httpResponseStatusCode"
+                                           Grid.Column="1"
+                                           Foreground="Gray"
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Right"/>
+                                </Grid>
+                            </ScrollViewer>
                         </Grid>
                     </DockPanel>
                 </TabItem>

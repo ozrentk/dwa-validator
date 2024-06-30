@@ -1,5 +1,4 @@
 ﻿using DwaValidatorApp.Logging;
-using DwaValidatorApp.Services.Implementation;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 using System.Diagnostics;
@@ -8,7 +7,7 @@ namespace DwaValidatorApp.Validation
 {
     public class ProjectBuildValidationStep : ValidationStepBase
     {
-        protected static bool RestoreNuGetPackages(string projectFilePath, CustomLogger customLogger)
+        protected static async Task<bool> RestoreNuGetPackages(string projectFilePath, CustomLogger customLogger)
         {
             ProcessStartInfo processStartInfo = 
                 new ProcessStartInfo("dotnet", $"restore \"{projectFilePath}\"")
@@ -23,17 +22,17 @@ namespace DwaValidatorApp.Validation
             {
                 while (!process.StandardOutput.EndOfStream)
                 {
-                    string line = process.StandardOutput.ReadLine();
+                    string line = await process.StandardOutput.ReadLineAsync();
                     customLogger.LogMessage(line); // Log standard output messages
                 }
 
                 while (!process.StandardError.EndOfStream)
                 {
-                    string line = process.StandardError.ReadLine();
+                    string line = await process.StandardError.ReadLineAsync();
                     customLogger.LogMessage(line); // Log error messages
                 }
 
-                process.WaitForExit();
+                await process.WaitForExitAsync();
 
                 return process.ExitCode == 0;
             }

@@ -9,6 +9,8 @@ using System.Data;
 using System.IO;
 using System.Text;
 using System.Windows;
+using YamlDotNet.Serialization.NamingConventions;
+using YamlDotNet.Serialization;
 
 namespace DwaValidatorApp
 {
@@ -25,14 +27,22 @@ namespace DwaValidatorApp
         {
             MSBuildLocator.RegisterDefaults();
 
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            //var builder = new ConfigurationBuilder()
+            //    .SetBasePath(Directory.GetCurrentDirectory())
+            //    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-            _configuration = builder.Build();
+            //_configuration = builder.Build();
 
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
+
+            var deserializer = new DeserializerBuilder().Build();
+            serviceCollection.AddScoped<IDeserializer>(_ => deserializer);
+
+            var serializer = new SerializerBuilder().Build();
+            serviceCollection.AddScoped<ISerializer>(_ => serializer);
+
+            //serviceCollection.AddScoped<IConfiguration>(_ => _configuration);
 
             //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -45,9 +55,10 @@ namespace DwaValidatorApp
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<AppSettings>(_configuration);
+            //services.Configure<AppSettings>(_configuration);
 
             // BEGIN: service registration
+            services.AddSingleton<IYamlSettings, YamlSettings>();
             services.AddSingleton<ISolutionArchiveProvider, SolutionArchiveProvider>();
             services.AddSingleton<IValidationContextProvider, ValidationContextProvider>();
             services.AddSingleton<IDashboardDataProvider, DashboardDataProvider>();

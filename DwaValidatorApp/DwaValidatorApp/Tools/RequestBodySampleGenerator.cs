@@ -11,7 +11,7 @@ namespace DwaValidatorApp.Tools
         {
         }
 
-        public static JToken Generate(string key, OpenApiSchema schema, HashSet<string> ancestry = null)
+        public static JToken Generate(string key, OpenApiSchema schema, HashSet<string>? ancestry = null)
         {
             ancestry ??= new();
 
@@ -68,7 +68,7 @@ namespace DwaValidatorApp.Tools
                             output = new JValue("sample@email.com");
                             break;
                         case "uuid":
-                            output = new JValue(Guid.NewGuid);
+                            output = new JValue(Guid.NewGuid());
                             break;
                         case "uri":
                             output = new JValue("http://sample.com");

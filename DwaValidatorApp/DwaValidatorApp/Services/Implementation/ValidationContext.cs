@@ -7,6 +7,7 @@ namespace DwaValidatorApp.Services.Implementation
     {
         //public List<string> InfoMessages { get; set; } = new();
         //public List<string> ErrorMessages { get; set; } = new();
+        public string Root { get; set; }
         public string UnpackedArchivesPath { get; set; }
         public string DataPath { get; set; }
         public string SolutionArchivePath { get; set; }
@@ -42,6 +43,6 @@ namespace DwaValidatorApp.Services.Implementation
         public string MvcUrl { get; set; }
         public string WebApiProfileName { get; set; }
         public string MvcProfileName { get; set; }
-        public string JwtToken { get; internal set; }
+        public string? JwtToken { get; set; }
     }
 }

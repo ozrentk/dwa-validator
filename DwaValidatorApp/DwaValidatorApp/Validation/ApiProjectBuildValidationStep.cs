@@ -11,7 +11,7 @@ namespace DwaValidatorApp.Validation
                 ValidationResult res = new();
 
                 var restorePackagesLogger = new CustomLogger();
-                if (!RestoreNuGetPackages(context.VsWebApiProjectPath, restorePackagesLogger))
+                if (!await RestoreNuGetPackages(context.VsWebApiProjectPath, restorePackagesLogger))
                 {
                     res.AddErrors(restorePackagesLogger.Errors);
                     return res;

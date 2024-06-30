@@ -31,7 +31,7 @@ namespace DwaValidatorApp.ExtendedControls
             //TextRange otr = new TextRange(this.ContentStart, this.ContentEnd);
             //otr.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.GreenYellow));
 
-            // TODO: srediti ovaj select
+            // TODO: check if this is usable
             //TextRange ntr = new TextRange(StartSelectPosition, EndSelectPosition);
             //ntr.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(e.Ta));
             //ntr.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.White));

@@ -6,9 +6,9 @@ namespace DwaValidatorApp.Validation
 {
     public class ArchiveUnpackingStep : ValidationStepBase
     {
-        private const string RootFolder = "C:\\temp";
-        private const string UnpackedArchivesFolderName = "DwaValidator\\UnpackedArchives";
-        private const string DataFolderName = "DwaValidator\\Data";
+        //private const string RootFolder = "C:\\temp\\DwaValidator";
+        private const string UnpackedArchivesFolderName = "UnpackedArchives";
+        private const string DataFolderName = "Data";
 
         public override async Task<ValidationResult> RunAsync(ValidationContext context) =>
             await Task.Run(() =>
@@ -17,12 +17,12 @@ namespace DwaValidatorApp.Validation
 
                 context.UnpackedArchivesPath =
                     Path.Combine(
-                        RootFolder,
+                        context.Root,
                         UnpackedArchivesFolderName);
 
                 context.DataPath =
                     Path.Combine(
-                        RootFolder,
+                        context.Root,
                         DataFolderName);
 
                 // Unzip the archive

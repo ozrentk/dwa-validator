@@ -5,8 +5,6 @@ namespace DwaValidatorApp.Validation
 {
     public class FolderStructureValidationStep : ValidationStepBase
     {
-        const string solutionSufix = ".sln";
-
         public override async Task<ValidationResult> RunAsync(ValidationContext context) =>
             await Task.Run(() =>
             {

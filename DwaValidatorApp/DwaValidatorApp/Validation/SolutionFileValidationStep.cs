@@ -96,8 +96,38 @@ namespace DwaValidatorApp.Validation
                 otherReferences = otherReferences.Where(x => x != mvcReference && x != webApiReference).ToList();
                 context.VsOtherProjects.AddRange(otherReferences.Select(x => x.ProjectName));
 
+                var checkPaths = new[] { 
+                    context.VsWebApiProjectPath, 
+                    context.VsMvcProjectPath }
+                    .Concat(otherReferences.Select(x => x.AbsolutePath));
+                
+                foreach(var checkPath in checkPaths)
+                {
+                    var noBinObj = CheckForBinObjFolders(checkPath, res);
+                    if (!noBinObj) 
+                    {
+                        return res;
+                    }
+                }
+
                 return res;
             });
+
+        private bool CheckForBinObjFolders(string projectPath, ValidationResult res)
+        {
+            var projectRoot = Path.GetDirectoryName(projectPath);
+
+            var binFolder = Path.Combine(projectRoot, "bin");
+            var objFolder = Path.Combine(projectRoot, "obj");
+
+            if (Path.Exists(binFolder) || Path.Exists(objFolder))
+            {
+                res.AddError($"Bin/obj folder found in {projectRoot}");
+                return false;
+            }
+
+            return true;
+        }
 
         private static ProjectInSolutionVM SpecifyProjectsInSolution(SolutionFile solutionFile, ProjectInSolution mvcReference, ProjectInSolution webApiReference)
         {

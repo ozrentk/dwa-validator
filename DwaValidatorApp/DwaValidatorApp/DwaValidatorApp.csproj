@@ -30,6 +30,7 @@
     <PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="161.9118.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+    <PackageReference Include="YamlDotNet" Version="15.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,6 +43,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update=".dwavalidator">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
