@@ -26,10 +26,12 @@ namespace DwaValidatorApp.Validation
                 {
                     using (var zipFile = ZipFile.OpenRead(solutionArchivePath))
                     {
-                        context.ZipArchiveEntries = GetZipArchiveEntryNames(zipFile.Entries);
+                        var pcZipFileEntries = zipFile.Entries.Where(x => !x.FullName.StartsWith("__MACOSX"));
+
+                        context.ZipArchiveEntries = GetZipArchiveEntryNames(pcZipFileEntries);
                         res.AddInfo($"File {solutionArchivePath} looks like a valid unencrypted zip archive");
 
-                        var roots = GetZipArchiveRoots(zipFile.Entries);
+                        var roots = GetZipArchiveRoots(pcZipFileEntries);
 
                         if(roots.Count() == 0)
                         {
