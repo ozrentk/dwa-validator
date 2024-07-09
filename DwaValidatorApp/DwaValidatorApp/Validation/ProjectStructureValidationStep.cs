@@ -26,14 +26,28 @@ namespace DwaValidatorApp.Validation
                 return false;
             }
 
+            await UpdateExactAppSettingsInstance(res, context.DatabaseName, appSettingsPath);
+
+            string appSettingsDevelopmentPath = GetIncludedFilePath(
+                "appsettings.Development.json",
+                projectPath);
+
+            if (appSettingsDevelopmentPath != null)
+            {
+                await UpdateExactAppSettingsInstance(res, context.DatabaseName, appSettingsDevelopmentPath);
+            }
+
+            return true;
+        }
+
+        private static async Task UpdateExactAppSettingsInstance(ValidationResult res, string databaseName, string appSettingsPath)
+        {
             var includeText = await File.ReadAllTextAsync(appSettingsPath);
 
             // Use Newtonsoft.Json, other approaches are not good
-            var output = UpdateConnectionString(res, includeText, context.DatabaseName);
+            var output = UpdateConnectionString(res, includeText, databaseName);
 
             await File.WriteAllTextAsync(appSettingsPath, output);
-
-            return true;
         }
 
         protected static async Task<Tuple<string, string>> GetUrlFromLaunchSettings(
@@ -85,7 +99,7 @@ namespace DwaValidatorApp.Validation
                     return null;
                 }
 
-                res.AddInfo($"Starting profile named {profileName} used (profile named http is missing)");
+                res.AddInfo($"Profile named {profileName} is used");
             }
             profile = profiles[profileName] as JObject;
 
@@ -140,20 +154,21 @@ namespace DwaValidatorApp.Validation
             
             return includePath;
         }
+
         protected static string UpdateConnectionString(ValidationResult res, string jsonText, string dbName)
         {
             dynamic jsonObj = JsonConvert.DeserializeObject(jsonText);
             if (jsonObj["ConnectionStrings"] == null)
             {
-                res.AddInfo("WARNING: No ConnectionStrings found in appsettings.json");
+                res.AddInfo("WARNING: No ConnectionStrings found in appsettings instance");
                 return jsonText;
             }
-            res.AddInfo("ConnectionStrings found in appsettings.json");
+            res.AddInfo("ConnectionStrings found in appsettings instance");
 
             var connectionStrings = jsonObj["ConnectionStrings"] as JObject;
             if (connectionStrings.Count > 1)
             {
-                res.AddError("Multiple ConnectionStrings found in appsettings.json");
+                res.AddError("Multiple ConnectionStrings found in appsettings instance");
                 return jsonText;
             }
 

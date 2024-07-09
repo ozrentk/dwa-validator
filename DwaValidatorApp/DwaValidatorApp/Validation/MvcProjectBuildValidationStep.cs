@@ -14,10 +14,14 @@ namespace DwaValidatorApp.Validation
                 var isRestored = await RestoreNuGetPackages(context.VsMvcProjectPath, restorePackagesLogger);
                 if (!isRestored)
                 {
-                    res.AddErrors(restorePackagesLogger.Errors);
+                    res.AddInfo("Warning: failed to restore packages!");
+                    res.AddInfos(restorePackagesLogger.Errors);
                     return res;
                 }
-                res.AddInfo("MVC NuGet packages restored successfully.");
+                else
+                {
+                    res.AddInfo("MVC NuGet packages restored successfully.");
+                }
 
                 var buildLogger = new CustomLogger();
                 var artefact = BuildProject(context.VsMvcProjectPath, buildLogger);

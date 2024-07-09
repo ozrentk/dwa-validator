@@ -66,5 +66,20 @@ namespace DwaValidatorApp.Viewmodel
                     => EndpointType.PrimaryById,
                 _ => EndpointType.Unknown
             };
+
+        public static EntityType MapToEntityType(EndpointType endpointType)
+            => endpointType switch
+            {
+                EndpointType.Primary => EntityType.Primary,
+                EndpointType.PrimarySearch => EntityType.Primary,
+                EndpointType.PrimaryById => EntityType.Primary,
+                EndpointType.Register => EntityType.User,
+                EndpointType.Login => EntityType.User,
+                EndpointType.ChangePassword => EntityType.User,
+                EndpointType.LogsGetN => EntityType.Unknown,
+                EndpointType.LogsCount => EntityType.Unknown,
+                EndpointType.User => EntityType.User,
+                _ => EntityType.Unknown
+            };
     }
 }

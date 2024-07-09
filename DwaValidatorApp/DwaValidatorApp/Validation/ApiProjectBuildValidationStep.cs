@@ -11,12 +11,17 @@ namespace DwaValidatorApp.Validation
                 ValidationResult res = new();
 
                 var restorePackagesLogger = new CustomLogger();
-                if (!await RestoreNuGetPackages(context.VsWebApiProjectPath, restorePackagesLogger))
+                var isRestored = await RestoreNuGetPackages(context.VsWebApiProjectPath, restorePackagesLogger);
+                if (!isRestored)
                 {
-                    res.AddErrors(restorePackagesLogger.Errors);
+                    res.AddInfo("Warning: failed to restore packages!");
+                    res.AddInfos(restorePackagesLogger.Errors);
                     return res;
                 }
-                res.AddInfo("Web API NuGet packages restored successfully.");
+                else 
+                {
+                    res.AddInfo("Web API NuGet packages restored successfully.");
+                }
 
                 var buildLogger = new CustomLogger();
                 var artefact = BuildProject(context.VsWebApiProjectPath, buildLogger);

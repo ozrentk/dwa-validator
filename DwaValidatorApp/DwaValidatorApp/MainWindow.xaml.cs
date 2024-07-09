@@ -1,5 +1,4 @@
-﻿using DwaValidatorApp.Config;
-using DwaValidatorApp.Extensions;
+﻿using DwaValidatorApp.Extensions;
 using DwaValidatorApp.Services.Implementation;
 using DwaValidatorApp.Services.Interface;
 using DwaValidatorApp.Validation;
@@ -7,10 +6,8 @@ using DwaValidatorApp.Viewmodel;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SharpYaml.Serialization;
 using System.Data;
 using System.Diagnostics;
-using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Windows;
@@ -19,7 +16,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using YamlDotNet.Serialization;
 
 namespace DwaValidatorApp
 {
@@ -72,6 +68,48 @@ namespace DwaValidatorApp
             ResetViewModel();
         }
 
+        private void FillSchemaMatches()
+        {
+            //_applicationVm.EndpointSchemaItems;
+            //_applicationVm.TableSchemaItems;
+
+            var entityTypes = Enum.GetValues<EntityType>();
+            foreach (EntityType entityType in entityTypes)
+            {
+                var dispName = entityType.GetDisplayName();
+                var matchVm = SchemaMatchVM.Create(dispName, _applicationVm.SchemaMatches);
+
+                var tableSchemas = _applicationVm.TableSchemaItems.Where(x => x.EntityType == entityType);
+                foreach (var tableSchema in tableSchemas)
+                {
+                    var name = $"Database entity: {tableSchema.TableName}";
+                    var child = SchemaMatchVM.Create(name, matchVm);
+                }
+
+                var epSchemas = 
+                    _applicationVm.EndpointSchemaItems.Where(x => 
+                        EndpointSchemaVM.MapToEntityType(x.EndpointType) == entityType);
+                foreach (var epSchema in epSchemas)
+                {
+                    var name = $"{epSchema.EndpointType}: {epSchema.EndpointUri}";
+                    var child = SchemaMatchVM.Create(name, matchVm);
+                }
+            }
+
+            //var primary = SchemaMatchVM.Create("Primary", _applicationVm.SchemaMatches);
+            //var oneToN = SchemaMatchVM.Create("1-to-N", _applicationVm.SchemaMatches);
+            //var mToN = SchemaMatchVM.Create("M-to-N", _applicationVm.SchemaMatches);
+            //var mToNBridge = SchemaMatchVM.Create("M-to-N-bridge", _applicationVm.SchemaMatches);
+            //var userMToNBridge = SchemaMatchVM.Create("User-M-to-N-bridge", _applicationVm.SchemaMatches);
+            //var image = SchemaMatchVM.Create("Image", _applicationVm.SchemaMatches);
+            //var user = SchemaMatchVM.Create("User", _applicationVm.SchemaMatches);
+
+            //var child11 = SchemaMatchVM.Create("M-to-N", primary);
+            //var child12 = SchemaMatchVM.Create("Child 1-2", primary);
+            //var child21 = SchemaMatchVM.Create("Child 2-1", primary);
+            //var child22 = SchemaMatchVM.Create("Child 2-2", oneToN);
+        }
+
         private void ResetViewModel()
         {
             _applicationVm.ValidationSteps.Clear();
@@ -86,6 +124,10 @@ namespace DwaValidatorApp
             }
 
             _applicationVm.CurrentValidationStep = _applicationVm.ValidationSteps.First();
+
+            _applicationVm.TableSchemaItems.Clear();
+            _applicationVm.EndpointSchemaItems.Clear();
+            _applicationVm.SchemaMatches.Clear();
 
             DataContext = _applicationVm;
         }
@@ -246,6 +288,8 @@ namespace DwaValidatorApp
                 {
                     _applicationVm.EndpointSchemaItems.Add(schema);
                 }
+
+                FillSchemaMatches();
             }
         }
 

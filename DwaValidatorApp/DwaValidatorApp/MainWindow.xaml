@@ -211,6 +211,50 @@
                         </Border>
                     </Grid>
                 </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <TextBlock>Schema Matches</TextBlock>
+                    </TabItem.Header>
+                    <Grid>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" >
+                            <TreeView x:Name="myTreeView"
+                                      ItemsSource="{Binding SchemaMatches}">
+                                <TreeView.ItemTemplate>
+                                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                        <TextBlock Text="{Binding Name}" />
+                                    </HierarchicalDataTemplate>
+                                </TreeView.ItemTemplate>
+                                <TreeView.ItemContainerStyle>
+                                    <Style TargetType="{x:Type TreeViewItem}">
+                                        <Setter Property="IsExpanded" Value="True" />
+                                    </Style>
+                                </TreeView.ItemContainerStyle>
+                                <!--<TreeViewItem Header="Employee1" IsSelected="True">
+                                    <TreeViewItem Header="Jesper Aaberg"/>
+                                    <TreeViewItem Header="Employee Number">
+                                        <TreeViewItem Header="12345"/>
+                                    </TreeViewItem>
+                                    <TreeViewItem Header="Work Days">
+                                        <TreeViewItem Header="Monday"/>
+                                        <TreeViewItem Header="Tuesday"/>
+                                        <TreeViewItem Header="Thursday"/>
+                                    </TreeViewItem>
+                                </TreeViewItem>
+                                <TreeViewItem Header="Employee2">
+                                    <TreeViewItem Header="Dominik Paiha"/>
+                                    <TreeViewItem Header="Employee Number">
+                                        <TreeViewItem Header="98765"/>
+                                    </TreeViewItem>
+                                    <TreeViewItem Header="Work Days">
+                                        <TreeViewItem Header="Tuesday"/>
+                                        <TreeViewItem Header="Wednesday"/>
+                                        <TreeViewItem Header="Friday"/>
+                                    </TreeViewItem>
+                                </TreeViewItem>-->
+                            </TreeView>
+                        </ScrollViewer>
+                    </Grid>
+                </TabItem>
                 <TabItem x:Name="executeHttpRequestTab">
                     <TabItem.Header>
                         <TextBlock>Execute HTTP request</TextBlock>

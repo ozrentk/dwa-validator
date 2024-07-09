@@ -2,6 +2,7 @@
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 using System.Diagnostics;
+using System.IO;
 
 namespace DwaValidatorApp.Validation
 {
@@ -12,6 +13,7 @@ namespace DwaValidatorApp.Validation
             ProcessStartInfo processStartInfo = 
                 new ProcessStartInfo("dotnet", $"restore \"{projectFilePath}\"")
             {
+                WorkingDirectory = Path.GetDirectoryName(projectFilePath),
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,

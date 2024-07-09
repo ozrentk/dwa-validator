@@ -16,6 +16,8 @@ namespace DwaValidatorApp.Viewmodel
 
         private ValidationStepVM _currentValidationStep;
 
+        public ObservableCollection<SchemaMatchVM> SchemaMatches { get; set; } = new();
+
         public ValidationStepVM CurrentValidationStep 
         {
             get
