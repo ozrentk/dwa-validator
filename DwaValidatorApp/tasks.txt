@@ -4,8 +4,22 @@ TODO:
     - poslati koji je korisnik admin
     - poslati koji je korisnik "obièan korisnik"
     - ako postoje bin i obj folderi, tražiti da ih se obriše zbog problema s velièinom arhive
+    - Api i MVC aplikacije moraju biti na razlièitim portovima
+    - aplikacija prlikom starta ne smije u command promptu pokazivati greške
+    - Web API: ne smije biti sve u istom kontroleru
+    - Web API: EF modeli ne smiju biti izravno korišteni u kontrolerima, potrebno je koristiti DTO
+    - Web API: za search, potrebno je omoguæiti i prazan unos
+    - Web API: inzistirati na default broju logova na logs akciji
+    - MVC: create, edit i delete ne smiju biti nagurani u istu stranicu
+    - MVC: za search funkcionalnost, dozvoliti 1-to-N odabir za filtriranje in sortiranje
+    - MVC: za search, potrebno je omoguæiti i prazan unos
+    - MVC: izbaciti user-m-to-n kao obavezan, neka bude moguæ, za višu ocjenu
+    - MVC: inzistirati na custom poruci kod greške u validaciji
+    - posebna kazna za hardkodirani conn. string
+    - posebna kazna za id-eve prikazane u viewu
 
 - dodatne funkcionalnosti
+    - !!!detektor hardkodiranog conn stringa (u kontekstu ili program.cs)
     - kod prvog pokretanja se otvara dijalog i sprema mjesto gdje æe biti raspakirana rješenja i kreirane datoteke baza podataka
       (default: %USERPROFILE%\DwaValidator)
         - treba mi konfiguracija za to

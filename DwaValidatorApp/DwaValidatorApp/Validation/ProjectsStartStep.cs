@@ -17,11 +17,25 @@ namespace DwaValidatorApp.Validation
                 ValidationResult res = new();
 
                 var apiPort = int.Parse(context.WebApiUrl.Split(":").Last());
-                KillIfRunning(apiPort);
+                try
+                {
+                    KillIfRunning(apiPort);
+                }
+                catch (Exception ex)
+                {
+                    res.AddInfo($"Could not kill process on port {apiPort}: {ex.Message}");
+                }
                 context.WebApiProjectProcess = StartProject(context.VsWebApiProjectPath, context.WebApiProfileName);
 
                 var mvcPort = int.Parse(context.MvcUrl.Split(":").Last());
-                KillIfRunning(mvcPort);
+                try
+                {
+                    KillIfRunning(mvcPort);
+                }
+                catch (Exception ex)
+                {
+                    res.AddInfo($"Could not kill process on port {apiPort}: {ex.Message}");
+                }
                 context.MvcProjectProcess = StartProject(context.VsMvcProjectPath, context.MvcProfileName);
 
                 return res;

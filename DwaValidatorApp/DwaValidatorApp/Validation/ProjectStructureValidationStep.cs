@@ -78,30 +78,22 @@ namespace DwaValidatorApp.Validation
             }
 
             string profileName = null;
-            JObject profile = null;
-            if (profiles.ContainsKey("http"))
-            {
-                profileName = "http";
-            }
-            else
-            {
-                var profileNames = profiles.Properties()
-                                           .Select(x => x.Name)
-                                           .ToList();
-                Application.Current.Dispatcher.Invoke((Action)delegate {
-                    var startingProfileVm = SpecifyStartingProfile(title, profileNames);
-                    profileName = startingProfileVm.SelectedProfile;
-                });
+            var profileNames = profiles.Properties()
+                                        .Select(x => x.Name)
+                                        .ToList();
+            Application.Current.Dispatcher.Invoke((Action)delegate {
+                var startingProfileVm = SpecifyStartingProfile(title, profileNames, "http");
+                profileName = startingProfileVm.SelectedProfile;
+            });
 
-                if (string.IsNullOrEmpty(profileName))
-                {
-                    res.AddError($"Could not detect starting profile");
-                    return null;
-                }
-
-                res.AddInfo($"Profile named {profileName} is used");
+            if (string.IsNullOrEmpty(profileName))
+            {
+                res.AddError($"Could not detect starting profile");
+                return null;
             }
-            profile = profiles[profileName] as JObject;
+
+            res.AddInfo($"Profile named {profileName} is used");
+            JObject profile = profiles[profileName] as JObject;
 
             JValue url;
             if (!profile.ContainsKey("applicationUrl"))
@@ -180,13 +172,14 @@ namespace DwaValidatorApp.Validation
             return JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
         }
 
-        private static StartingProfileVM SpecifyStartingProfile(string title, List<string> profileNames)
+        private static StartingProfileVM SpecifyStartingProfile(string title, List<string> profileNames, string selectedProfile)
         {
             var startProfileWindow = new StartProfileWindow();
             var startingProfileVm = new StartingProfileVM
             {
                 Title = title,
-                AllProfiles = profileNames
+                AllProfiles = profileNames,
+                SelectedProfile = selectedProfile
             };
             startProfileWindow.DataContext = startingProfileVm;
 

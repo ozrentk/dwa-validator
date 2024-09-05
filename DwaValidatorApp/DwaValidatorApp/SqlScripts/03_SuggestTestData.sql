@@ -109,13 +109,16 @@ BEGIN
 		-- PRIMARY KEY
 		IF(@isPrimaryKey = 1 AND @isIdentity = 1)
 		BEGIN
+			PRINT 'Suggesting random PK IDENTITY...'
 			UPDATE #tableDefData
 			SET suggestedValue = NULL
 			WHERE CURRENT OF @tableDefDataCursor;
+			PRINT 'Random PK IDENTITY suggested as NULL.'
 		END
 		ELSE IF(@isPrimaryKey = 1 AND 
 			(@typeName = 'int' OR @typeName = 'tinyint' OR @typeName = 'smallint' OR @typeName = 'bigint'))
 		BEGIN
+			PRINT 'Suggesting random PK (tiny/small/big)int...'
 			DECLARE @nextPk bigint;
 			SET @command = 
 				FORMATMESSAGE('SELECT @nextPkOut = COALESCE(MAX(%s), 0) + 1 FROM %s', @columnName, @targetTableName);
@@ -130,16 +133,20 @@ BEGIN
 			UPDATE #tableDefData
 			SET suggestedValue = @nextPk
 			WHERE CURRENT OF @tableDefDataCursor;
+			PRINT 'Random PK (tiny/small/big)int suggested.'
 		END
 		ELSE IF(@isPrimaryKey = 1 AND 
 			NOT (@typeName = 'int' OR @typeName = 'tinyint' OR @typeName = 'smallint' OR @typeName = 'bigint'))
 		BEGIN
+			PRINT 'Suggesting random PK and NOT (tiny/small/big)int...'
 			SET @command = FORMATMESSAGE('%s.%s: The type %s is not supported as a primary key', @targetTableName, @columnName, @typeName);
 			RAISERROR (@command, 16, 1)
 			BREAK
+			PRINT 'Random PK and NOT (tiny/small/big)int suggested.'
 		END
 		ELSE IF(@referencedTableName IS NOT NULL)
 		BEGIN
+			PRINT 'Suggesting random FK...'
 			DECLARE @refFk bigint;
 			SET @command = 
 				FORMATMESSAGE('SELECT TOP 1 @refFkOut = [%s] FROM [%s] ORDER BY newid()', @referencedColumnName, @referencedTableName);
@@ -154,6 +161,7 @@ BEGIN
 			UPDATE #tableDefData
 			SET suggestedValue = @refFk
 			WHERE CURRENT OF @tableDefDataCursor;
+			PRINT 'Random FK suggested.'
 		END
 		ELSE IF(@typeName = 'int' OR @typeName = 'tinyint' OR @typeName = 'smallint' OR @typeName = 'bigint')
 		BEGIN
@@ -173,8 +181,9 @@ BEGIN
 			SET suggestedValue = @rndBit
 			WHERE CURRENT OF @tableDefDataCursor;
 		END
-		ELSE IF(@typeName = 'nvarchar' OR @typeName = 'varchar' OR @typeName = 'nchar' OR @typeName = 'char')
+		ELSE IF(@typeName = 'nvarchar' OR @typeName = 'varchar' OR @typeName = 'nchar' OR @typeName = 'char' OR @typeName = 'text')
 		BEGIN
+			PRINT 'Suggesting random (n)(var)char or text...'
 			SET @typeLength = COALESCE(@typeLength, 4000) -- if it's max
 			SET @typeLength = @typeLength / 2 -- for nvarchar, safely set max length
 
@@ -182,43 +191,51 @@ BEGIN
 
 			DECLARE @rndChar nvarchar(4000)
 			EXEC GetLoremIpsum @typeLength, @rndChar OUTPUT
-			PRINT 'Random nvarchar: ' + @columnName + '=' + @rndChar
+			PRINT 'Random (n)(var)char or text: ' + @columnName + '=' + @rndChar
 
 			UPDATE #tableDefData
 			SET suggestedValue = @rndChar
 			WHERE CURRENT OF @tableDefDataCursor;
+			PRINT 'Random (n)(var)char or text suggested.'
 		END
 		ELSE IF(@typeName = 'decimal' OR @typeName = 'numeric')
 		BEGIN
-			DECLARE @precisionMax bigint = POWER(10, @typePrecision)
+			PRINT 'Suggesting random decimal...'
+			DECLARE @precisionMax bigint = POWER(10, IIF(@typePrecision > 9, 9, @typePrecision))
 			DECLARE @rndDecimal decimal = ABS(CHECKSUM(NEWID()) % @precisionMax) / @typeScale
 			PRINT 'Random decimal: ' + @columnName + '=' + CAST(@rndDecimal AS nvarchar(100))
 
 			UPDATE #tableDefData
 			SET suggestedValue = @rndDecimal
 			WHERE CURRENT OF @tableDefDataCursor;
+			PRINT 'Random decimal suggested.'
 		END
 		ELSE IF(@typeName = 'money' OR @typeName = 'smallmoney')
 		BEGIN
-			DECLARE @moneyMax bigint = POWER(10, 10)
+			PRINT 'Suggesting random money...'
+			DECLARE @moneyMax bigint = POWER(10, 9)
 			DECLARE @rndMoney money = ABS(CHECKSUM(NEWID()) % @moneyMax) / 10000
 			PRINT 'Random money: ' + @columnName + '=' + CAST(@rndMoney AS nvarchar(100))
 
 			UPDATE #tableDefData
 			SET suggestedValue = @rndMoney
 			WHERE CURRENT OF @tableDefDataCursor;
+			PRINT 'Random money suggested.'
 		END
 		ELSE IF(@typeName = 'float' OR @typeName = 'real')
 		BEGIN
+			PRINT 'Suggesting random float...'
 			DECLARE @rndFloat float = RAND() * 100000
 			PRINT 'Random float: ' + @columnName + '=' + CAST(@rndFloat AS nvarchar(100))
 
 			UPDATE #tableDefData
 			SET suggestedValue = @rndFloat
 			WHERE CURRENT OF @tableDefDataCursor;
+			PRINT 'Random float suggested.'
 		END
 		ELSE IF(@typeName = 'date' OR @typeName = 'datetime'  OR @typeName = 'smalldatetime' OR @typeName = 'datetime2' OR @typeName = 'datetimeoffset')
 		BEGIN
+			PRINT 'Suggesting random date...'
 			DECLARE @minDate datetime2 = '1976-12-10 00:00:00' 
 			DECLARE @maxDate datetime2 = '2020-03-11 23:59:59'
 			DECLARE @seconds int = DATEDIFF(ss, @minDate, @maxDate)
@@ -230,6 +247,7 @@ BEGIN
 			UPDATE #tableDefData
 			SET suggestedValue = @rndDateStr
 			WHERE CURRENT OF @tableDefDataCursor;
+			PRINT 'Random date suggested.'
 		END
 		ELSE -- unsupporteds
 		BEGIN
@@ -238,8 +256,10 @@ BEGIN
 			UPDATE #tableDefData
 			SET suggestedValue = NULL
 			WHERE CURRENT OF @tableDefDataCursor;
+			PRINT 'Random unsupported suggested as NULL.'
 		END
 
+		PRINT 'About to FETCH NEXT....'
 		FETCH NEXT FROM @tableDefDataCursor INTO 
 			@columnId,
 			@columnName,
@@ -252,6 +272,7 @@ BEGIN
 			@isPrimaryKey,
 			@isIdentity,
 			@suggestedValue;
+		PRINT 'FETCH NEXT ok.'
 
 	END
 	CLOSE @tableDefDataCursor;
