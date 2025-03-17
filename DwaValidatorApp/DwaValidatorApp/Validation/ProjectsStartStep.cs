@@ -4,6 +4,9 @@ using DwaValidatorApp.Tools;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Windows.Input;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace DwaValidatorApp.Validation
 {
@@ -25,8 +28,10 @@ namespace DwaValidatorApp.Validation
                 {
                     res.AddInfo($"Could not kill process on port {apiPort}: {ex.Message}");
                 }
-                context.WebApiProjectProcess = StartProject(context.VsWebApiProjectPath, context.WebApiProfileName);
+                context.WebApiProjectProcess = StartProject(context.VsWebApiProjectPath, context.WebApiProfileName, context.RedirectProcessOutputToLog, res);
 
+                await Task.Delay(500);
+                
                 var mvcPort = int.Parse(context.MvcUrl.Split(":").Last());
                 try
                 {
@@ -36,38 +41,58 @@ namespace DwaValidatorApp.Validation
                 {
                     res.AddInfo($"Could not kill process on port {apiPort}: {ex.Message}");
                 }
-                context.MvcProjectProcess = StartProject(context.VsMvcProjectPath, context.MvcProfileName);
+                context.MvcProjectProcess = StartProject(context.VsMvcProjectPath, context.MvcProfileName, context.RedirectProcessOutputToLog, res);
 
                 return res;
             });
 
-        private Process StartProject(string artefact, string profileName)
+        private Process StartProject(string artefact, string profileName, bool redirectOutToLog, ValidationResult res)
         {
             string workingDir = Path.GetDirectoryName(artefact);
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 FileName = "dotnet",
                 Arguments = $"run --launch-profile {profileName}",
-                //UseShellExecute = false,
-                //CreateNoWindow = true,
+                UseShellExecute = true,
                 //RedirectStandardOutput = true,
                 //RedirectStandardError = true,
-                WorkingDirectory = workingDir
+                CreateNoWindow = false,
+                WorkingDirectory = workingDir,
+                ErrorDialog = true,                
             };
+
+            if (redirectOutToLog)
+            {
+                startInfo.RedirectStandardOutput = true;
+                startInfo.RedirectStandardError = true;
+                startInfo.UseShellExecute = false;
+                startInfo.CreateNoWindow = true;
+                startInfo.ErrorDialog = false;
+            }
 
             var process = Process.Start(startInfo);
 
-            //while (!process.StandardOutput.EndOfStream)
-            //{
-            //    string line = process.StandardOutput.ReadLine();
-            //    _logger.LogMessage(line); // Log standard output messages
-            //}
+            if (redirectOutToLog)
+            {
+                process.OutputDataReceived += (sender, e) => Debug.WriteLine("STDOUT: " + e.Data);
+                process.ErrorDataReceived += (sender, e) => Debug.WriteLine("STDERR: " + e.Data);
 
-            //while (!process.StandardError.EndOfStream)
-            //{
-            //    string line = process.StandardError.ReadLine();
-            //    _logger.LogMessage(line); // Log error messages
-            //}
+                while (!process.StandardOutput.EndOfStream)
+                {
+                    string line = process.StandardOutput.ReadLine();
+                    //_logger.LogMessage(line); // Log standard output messages
+                    res.AddInfo(line);
+                }
+
+                while (!process.StandardError.EndOfStream)
+                {
+                    string line = process.StandardError.ReadLine();
+                    //_logger.LogMessage(line); // Log error messages
+                    res.AddError(line);
+                }
+
+                process.WaitForExit();
+            }
 
             return process;
         }

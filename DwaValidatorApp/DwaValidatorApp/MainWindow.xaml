@@ -35,9 +35,10 @@
                 DockPanel.Dock="Top" 
                 Margin="2">
                 <ListBox x:Name="validationSteps" 
-                     ItemsSource="{Binding Path=ValidationSteps}"
-                     SelectedItem="{Binding Path=CurrentValidationStep, Mode=TwoWay}"
-                     DockPanel.Dock="Top">
+                         ItemsSource="{Binding Path=ValidationSteps}"
+                         SelectedItem="{Binding Path=CurrentValidationStep, Mode=TwoWay}"
+                         DockPanel.Dock="Top"
+                         MouseDoubleClick="ValidationSteps_MouseDoubleClick">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="{x:Type ListBoxItem}">
                             <Setter Property="Focusable" Value="False"/>
@@ -59,6 +60,7 @@
                 <RowDefinition Height="Auto" MinHeight="80" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="2*" MinHeight="200" />
+                <RowDefinition Height="Auto" MinHeight="30" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*"  MinHeight="80" />
             </Grid.RowDefinitions>
@@ -78,8 +80,8 @@
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Center"
                           Background="Black" />
-            <TabControl x:Name="mainConfigTabs"
-                        Grid.Row="2">
+            <TabControl Grid.Row="2"
+                        x:Name="mainConfigTabs">
                 <TabItem>
                     <TabItem.Header>
                         <TextBlock>Database Schema</TextBlock>
@@ -334,18 +336,25 @@
                 </TabItem>
 
             </TabControl>
-            <GridSplitter Grid.Row="3"
+            <StackPanel Grid.Row="3">
+                <TextBlock>           
+                    <Hyperlink Click="Hyperlink_Click">
+                        Open solution folder
+                    </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+            <GridSplitter Grid.Row="4"
                           Height="5"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Center"
                           Background="Black" />
-            <ScrollViewer x:Name="messagesBoxScroller" 
-                          VerticalScrollBarVisibility="Auto"
-                          Grid.Row="4">
-                <sdo:TextBlockMoo x:Name="messagesBox" 
-                                  Margin="10"
-                                  TextWrapping="Wrap">
-                </sdo:TextBlockMoo>
+            <ScrollViewer Grid.Row="5"
+                          x:Name="messagesBoxScroller" 
+                          VerticalScrollBarVisibility="Auto">
+                <TextBlock x:Name="messagesBox" 
+                            Margin="10"
+                            TextWrapping="Wrap">
+                </TextBlock>
             </ScrollViewer>
         </Grid>
     </Grid>

@@ -189,6 +189,11 @@ namespace DwaValidatorApp
                     scope.ServiceProvider.GetRequiredService<IAppVmProvider>();
                 vmProvider.Current = _applicationVm;
 
+                if (Keyboard.IsKeyDown(Key.LeftCtrl))
+                {
+                    _contextProvider.Current.RedirectProcessOutputToLog = true;
+                }
+
                 var appSettings = _yamlSettings.Read();
                 var ctx = _contextProvider.Current;
                 ctx.Root = appSettings.StorageRootFolder;
@@ -217,9 +222,21 @@ namespace DwaValidatorApp
                     }
 
                     if (valRes.IsError)
+                    {
+                        if (_contextProvider.Current.RedirectProcessOutputToLog)
+                        {
+                            Clipboard.SetText(messagesBox.Text);
+                        }
+
                         return;
+                    }
 
                 } while (currentValidationStep != lastStep);
+
+                if (_contextProvider.Current.RedirectProcessOutputToLog)
+                {
+                    Clipboard.SetText(messagesBox.Text);
+                }
 
                 // Step 1 - get table schemas
                 var tableSchemas = await _dashboardDataProvider.GetTableSchemas();
@@ -510,6 +527,30 @@ namespace DwaValidatorApp
 
                 throw;
             }
+        }
+
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
+        {
+            if(string.IsNullOrEmpty(_contextProvider.Current.ExtractedArchivePath))
+            {
+                MessageBox.Show("Solution not yet extracted!");
+                return;
+            }
+
+            var psi = new System.Diagnostics.ProcessStartInfo()
+            {
+                FileName = _contextProvider.Current.ExtractedArchivePath,
+                UseShellExecute = true
+            };
+            System.Diagnostics.Process.Start(psi);
+        }
+
+        private void ValidationSteps_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var listBox = sender as ListBox;
+            var val = listBox.SelectedValue;
+
+            //await ValidateSolutionAsync(val);
         }
     }
 }

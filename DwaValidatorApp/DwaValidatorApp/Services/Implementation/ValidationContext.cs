@@ -44,5 +44,6 @@ namespace DwaValidatorApp.Services.Implementation
         public string WebApiProfileName { get; set; }
         public string MvcProfileName { get; set; }
         public string? JwtToken { get; set; }
+        public bool RedirectProcessOutputToLog { get; set; }
     }
 }

@@ -202,7 +202,9 @@ BEGIN
 		BEGIN
 			PRINT 'Suggesting random decimal...'
 			DECLARE @precisionMax bigint = POWER(10, IIF(@typePrecision > 9, 9, @typePrecision))
-			DECLARE @rndDecimal decimal = ABS(CHECKSUM(NEWID()) % @precisionMax) / @typeScale
+			DECLARE @typeScalePow bigint = POWER(10, COALESCE(@typeScale, 0))
+			DECLARE @rndDecimal decimal = ABS(CHECKSUM(NEWID()) % @precisionMax) / @typeScalePow
+
 			PRINT 'Random decimal: ' + @columnName + '=' + CAST(@rndDecimal AS nvarchar(100))
 
 			UPDATE #tableDefData
@@ -248,6 +250,17 @@ BEGIN
 			SET suggestedValue = @rndDateStr
 			WHERE CURRENT OF @tableDefDataCursor;
 			PRINT 'Random date suggested.'
+		END
+		ELSE IF(@typeName = 'uniqueidentifier')
+		BEGIN
+			PRINT 'Suggesting random uniqueidentifier...'
+			DECLARE @rndGuid uniqueidentifier = NEWID()
+			PRINT 'Random uniqueidentifier: ' + @columnName + '=' + CAST(@rndGuid AS nvarchar(100))
+
+			UPDATE #tableDefData
+			SET suggestedValue = @rndGuid
+			WHERE CURRENT OF @tableDefDataCursor;
+			PRINT 'Random uniqueidentifier suggested.'
 		END
 		ELSE -- unsupporteds
 		BEGIN

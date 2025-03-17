@@ -16,7 +16,6 @@ namespace DwaValidatorApp.Validation
                 {
                     res.AddInfo("Warning: failed to restore packages!");
                     res.AddInfos(restorePackagesLogger.Errors);
-                    return res;
                 }
                 else 
                 {

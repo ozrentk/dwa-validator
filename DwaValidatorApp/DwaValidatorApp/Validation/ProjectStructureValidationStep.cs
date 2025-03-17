@@ -160,14 +160,15 @@ namespace DwaValidatorApp.Validation
             var connectionStrings = jsonObj["ConnectionStrings"] as JObject;
             if (connectionStrings.Count > 1)
             {
-                res.AddError("Multiple ConnectionStrings found in appsettings instance");
-                return jsonText;
+                MessageBox.Show("Multiple ConnectionStrings found in appsettings instance. Please fix manually.");
             }
 
-            var cstr = connectionStrings.Children().First() as JProperty;
-
-            var newConnectionString = $"Server=(LocalDB)\\MSSQLLocalDB;Database={dbName};Integrated Security=True";
-            cstr.Value = newConnectionString;
+            var cstrs = connectionStrings.Children();
+            foreach (JProperty cstr in cstrs)
+            {
+                var newConnectionString = $"Server=(LocalDB)\\MSSQLLocalDB;Database={dbName};Integrated Security=True";
+                cstr.Value = newConnectionString;
+            }
 
             return JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
         }

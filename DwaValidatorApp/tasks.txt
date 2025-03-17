@@ -1,11 +1,16 @@
 TODO:
 
 - za studente
-    - poslati koji je korisnik admin
-    - poslati koji je korisnik "obièan korisnik"
-    - ako postoje bin i obj folderi, tražiti da ih se obriše zbog problema s velièinom arhive
-    - Api i MVC aplikacije moraju biti na razlièitim portovima
-    - aplikacija prlikom starta ne smije u command promptu pokazivati greške
+    - TREBA (automatika): ako postoje bin i obj folderi, tražiti da ih se obriše zbog problema s velièinom arhive
+    - TREBA (automatika): Api i MVC aplikacije moraju biti na razlièitim portovima
+    - TREBA (automatika): provjeriti context file za hardkodirani conn. string
+    - TREBA (automatika): provjeriti dogovorenu verziju .NET-a
+    - TREBA (automatika): izdati hash (digitalni potpis) na temelju kljuèa, checksuma, i neka salt bude trenutni timestamp
+    - TREBA: file se mora zvati Ime.Prezime.JMBAG.zip, neka automatika provjeri i to (konfiguracija je txt, treba imat 
+      mapiranje JMBAG na ime i prezime)
+    - NE TREBA: poslati koji je korisnik admin
+    - NE TREBA: poslati koji je korisnik "obièan korisnik"
+
     - Web API: ne smije biti sve u istom kontroleru
     - Web API: EF modeli ne smiju biti izravno korišteni u kontrolerima, potrebno je koristiti DTO
     - Web API: za search, potrebno je omoguæiti i prazan unos
@@ -15,15 +20,15 @@ TODO:
     - MVC: za search, potrebno je omoguæiti i prazan unos
     - MVC: izbaciti user-m-to-n kao obavezan, neka bude moguæ, za višu ocjenu
     - MVC: inzistirati na custom poruci kod greške u validaciji
-    - posebna kazna za hardkodirani conn. string
-    - posebna kazna za id-eve prikazane u viewu
+    - MVC: inzistirati da se id-evi ne prikazuju u viewu
+    - dodati napomenu da NIJE DOZVOLJENO KORIŠTENJE SCHEMA u bazi podataka
+    - dodati napomenu da NIJE DOZVOLJENO KORIŠTENJE MIGRACIJA
 
 - dodatne funkcionalnosti
-    - !!!detektor hardkodiranog conn stringa (u kontekstu ili program.cs)
     - kod prvog pokretanja se otvara dijalog i sprema mjesto gdje æe biti raspakirana rješenja i kreirane datoteke baza podataka
       (default: %USERPROFILE%\DwaValidator)
         - treba mi konfiguracija za to
-    - podržati scheme kod rada s bazom podataka
+    - NE: podržati scheme kod rada s bazom podataka
 
 - provjere kvalitete: Web API (app i DB)
 	- sve provjere kvalitete mogu biti poluautomatizirane, to jest može se prikazati hint
