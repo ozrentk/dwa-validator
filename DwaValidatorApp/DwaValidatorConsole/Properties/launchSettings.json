@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "DwaValidatorConsole": {
+      "commandName": "Project",
+      //"commandLineArgs": "--input D:\\algebra-dwa-validator\\dwa-validator\\DwaValidatorApp\\testfiles\\test.zip --output D:\\algebra-dwa-validator\\dwa-validator\\DwaValidatorApp\\testfiles\\out --force true --db_datasource OzrenXPS\\SQLEXPRESS"
+      //"commandLineArgs": "--input ..\\..\\..\\..\\testfiles\\examples\\RWA_LorenaBabic2.zip --output ..\\..\\..\\..\\testfiles\\out --force true --db_datasource OzrenXPS\\SQLEXPRESS"
+      "commandLineArgs": "--input .\\examples\\RWA_LorenaBabic2.zip --output .\\out --db_datasource OzrenXPS\\SQLEXPRESS"
+    }
+  }
+}
