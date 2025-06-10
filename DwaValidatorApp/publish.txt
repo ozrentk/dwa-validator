@@ -1,0 +1,10 @@
+------------------------------------------------------------------------------------
+PUBLISHING THE APPLICATION
+------------------------------------------------------------------------------------
+Publish profile already exists - use it!
+Output should be packed together:
+- Location: bin\Release\net8.0\publish\win-x64
+- Files: 
+  - DwaValidatorConsole.exe
+  - sni.dll
+  - readme.txt

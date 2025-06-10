@@ -22,15 +22,3 @@ Usage:
 		.\DwaValidatorConsole.exe --input D:\algebra-dwa-validator\dotnet-gui\dwa-validator\examples\ProjectTask-example.zip --output D:\temp\output --db_datasource OzrenXPS\SQLEXPRESS
 	(b) SQL Server authentication:
 		.\DwaValidatorConsole.exe --input D:\algebra-dwa-validator\dotnet-gui\dwa-validator\examples\ProjectTask-example.zip --output D:\temp\output --db_datasource OzrenXPS\SQLEXPRESS --db_user sa --db_password Pa55w.rd
-
-------------------------------------------------------------------------------------
-PUBLISHING THE APPLICATION
-------------------------------------------------------------------------------------
-Publish profile already exists - use it!
-Output should be packed together:
-- Location: bin\Release\net8.0\publish\win-x64
-- Files: 
-  - DwaValidatorConsole.exe
-  - sni.dll
-------------------------------------------------------------------------------------
-
