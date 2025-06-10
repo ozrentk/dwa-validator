@@ -20,6 +20,12 @@ namespace DwaValidatorConsole.Validation
             }
             res.AddInfo($"File {context.AbsoluteInput} looks like a zip archive");
 
+            if (!File.Exists(context.AbsoluteInput))
+            {
+                res.AddError($"File doesn't exist");
+                return res;
+            }
+
             try
             {
                 using (var zipFile = ZipFile.OpenRead(context.AbsoluteInput))

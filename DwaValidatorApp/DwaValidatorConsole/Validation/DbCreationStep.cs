@@ -12,52 +12,61 @@ public class DbCreationStep : ValidationStepBase
     {
         ValidationResult res = new();
 
-        var instanceMdfFileName = $"{context.DatabaseName}.mdf";
-        var instanceMdfPath = FluentPath.From(context.UnpackTargetDatabaseDataFiles).AppendCombined(instanceMdfFileName).NormalizeToWindows().ToString();
+        //var instanceMdfFileName = $"{context.DatabaseName}.mdf";
+        //var instanceMdfPath = FluentPath.From(context.UnpackTargetDatabaseDataFiles).AppendCombined(instanceMdfFileName).NormalizeToWindows().ToString();
 
-        var instanceLdfFileName = $"{context.DatabaseName}_log.ldf";
-        var instanceLdfPath = FluentPath.From(context.UnpackTargetDatabaseDataFiles).AppendCombined(instanceLdfFileName).NormalizeToWindows().ToString();
+        //var instanceLdfFileName = $"{context.DatabaseName}_log.ldf";
+        //var instanceLdfPath = FluentPath.From(context.UnpackTargetDatabaseDataFiles).AppendCombined(instanceLdfFileName).NormalizeToWindows().ToString();
 
         res.AddInfo($"Database name: {context.DatabaseName}");
-        res.AddInfo($"Instance MDF file name: {instanceMdfFileName}");
-        res.AddInfo($"Instance LDF file name: {instanceLdfFileName}");
+        //res.AddInfo($"Instance MDF file name: {instanceMdfFileName}");
+        //res.AddInfo($"Instance LDF file name: {instanceLdfFileName}");
 
-        Directory.CreateDirectory(context.UnpackTargetDatabaseDataFiles);
+        //Directory.CreateDirectory(context.UnpackTargetDatabaseDataFiles);
 
         string masterConnectionString = BuildMasterConnectionString(context);
 
-        if (File.Exists(instanceMdfPath))
-        {
-            try
-            {
-                string dropDbScript = $@"
-                    USE MASTER; 
-                    ALTER DATABASE [{context.DatabaseName}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE; 
-                    DROP DATABASE [{context.DatabaseName}]";
-                await RunMasterDatabaseScriptAsync(masterConnectionString, dropDbScript);
-                res.AddInfo($"Database {context.DatabaseName} dropped");
-            }
-            catch (Exception ex)
-            {
-                res.AddError($"Database {context.DatabaseName} drop failed");
-                res.AddError(ex.Message);
-                return res;
-            }
-        }
+//        try
+//        {
+//            string dropDbScript = 
+//$@"USE MASTER; 
+//IF EXISTS (SELECT 1 FROM sys.databases WHERE [name] = N'[{context.DatabaseName}]')
+//BEGIN
+//    ALTER DATABASE [{context.DatabaseName}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE
+//    DROP DATABASE [{context.DatabaseName}]
+//END";
+//            await RunMasterDatabaseScriptAsync(masterConnectionString, dropDbScript);
+//            res.AddInfo($"Database {context.DatabaseName} dropped");
+//        }
+//        catch (Exception ex)
+//        {
+//            res.AddError($"Database {context.DatabaseName} drop failed");
+//            res.AddError(ex.Message);
+//            return res;
+//        }
 
         try
         {
-            string createDbScript = $@"
-                CREATE DATABASE [{context.DatabaseName}] 
-                ON (NAME = '{context.DatabaseName}', FILENAME = '{instanceMdfPath}')
-                LOG ON (NAME = '{context.DatabaseName}_log', FILENAME = '{instanceLdfPath}');";
+            //string createDbScript = $@"
+            //    CREATE DATABASE [{context.DatabaseName}] 
+            //    ON (NAME = '{context.DatabaseName}', FILENAME = '{instanceMdfPath}')
+            //    LOG ON (NAME = '{context.DatabaseName}_log', FILENAME = '{instanceLdfPath}');";
+
+            string createDbScript = 
+$@"USE MASTER; 
+IF EXISTS (SELECT 1 FROM sys.databases WHERE [name] = N'{context.DatabaseName}')
+BEGIN
+    ALTER DATABASE [{context.DatabaseName}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE
+    DROP DATABASE [{context.DatabaseName}]
+END
+CREATE DATABASE [{context.DatabaseName}]";
 
             await RunMasterDatabaseScriptAsync(masterConnectionString, createDbScript);
-            res.AddInfo($"Database {context.DatabaseName} created");
+            res.AddInfo($"Database {context.DatabaseName} (re)created");
         }
         catch (Exception ex)
         {
-            res.AddError($"Database {context.DatabaseName} creation failed");
+            res.AddError($"Database {context.DatabaseName} (re)creation failed");
             res.AddError(ex.Message);
             return res;
         }

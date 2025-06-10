@@ -22,8 +22,9 @@ public class ValidationContext : AppArguments
         FluentPath.From(AbsoluteOutput).AppendCombined(ArchiveRootEntry, "Database", "Database.sql").NormalizeToUnix().ToString();
     public string UnpackTargetVsSolutionFile => //Path.Combine(AbsoluteOutput, ArchiveVsSolutionEntry).Replace(@"\", "/");
         FluentPath.From(AbsoluteOutput).AppendCombined(ArchiveVsSolutionEntry).NormalizeToUnix().ToString();
-    public string UnpackTargetDatabaseDataFiles => //Path.Combine(AbsoluteOutput, "DbDataFiles");
-        FluentPath.From(AbsoluteOutput).AppendCombined("DbDataFiles").NormalizeToUnix().ToString();
+
+    //public string UnpackTargetDatabaseDataFiles => //Path.Combine(AbsoluteOutput, "DbDataFiles");
+    //    FluentPath.From(AbsoluteOutput).AppendCombined("DbDataFiles").NormalizeToUnix().ToString();
 
     public string SolutionArchiveName { get; set; }
     public List<string> SqlBatches { get; set; } = new();

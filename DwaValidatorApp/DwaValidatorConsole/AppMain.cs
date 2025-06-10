@@ -1,7 +1,5 @@
 ﻿using DwaValidatorConsole.Services.Interface;
 using DwaValidatorConsole.Validation;
-using System.Data.Common;
-using System.IO;
 
 namespace DwaValidatorConsole
 {
@@ -40,7 +38,7 @@ namespace DwaValidatorConsole
             Console.WriteLine($"AbsoluteInput: {_context.AbsoluteInput}");
             Console.WriteLine($"Output: {_context.Output}");
             Console.WriteLine($"AbsoluteOutput: {_context.AbsoluteOutput}");
-            Console.WriteLine($"UnpackTargetDatabaseDataFiles: {_context.UnpackTargetDatabaseDataFiles}");
+            //Console.WriteLine($"UnpackTargetDatabaseDataFiles: {_context.UnpackTargetDatabaseDataFiles}");
             Console.WriteLine($"DbDataSource: {_context.DbDataSource}");
             Console.WriteLine($"DbUser: {_context.DbUser}");
             Console.WriteLine($"DbTrustedConnection: {_context.DbTrustedConnection}");
