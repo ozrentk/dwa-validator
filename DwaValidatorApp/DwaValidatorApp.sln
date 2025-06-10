@@ -5,9 +5,7 @@ VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0647C3FA-9734-4B7A-A2E7-BE14830F2C2D}"
 	ProjectSection(SolutionItems) = preProject
-		readme-en.txt = readme-en.txt
-		readme-hr.txt = readme-hr.txt
-		tasks.txt = tasks.txt
+		readme.txt = readme.txt
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DwaValidatorConsole", "DwaValidatorConsole\DwaValidatorConsole.csproj", "{4EE07132-8371-4A83-B28D-4C06DDA1C7C5}"
